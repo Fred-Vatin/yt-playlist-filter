@@ -4,6 +4,8 @@ This project contains an userscript `user script/yt-playlist-filter.user.js`. Yo
 
 [![Install Userscript](https://img.shields.io/badge/Install_Userscript-Playlist%20Filter-blue?style=for-the-badge)](https://raw.githubusercontent.com/Fred-Vatin/yt-playlist-filter/main/user%20script/yt-playlist-filter.user.js) [![BUY ME A COFFEE](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-ffffff?logo=buymeacoffee&style=for-the-badge&color=710067&logoColor=ffe071)](https://github.com/sponsors/Fred-Vatin)
 
+*It is full rewrite of another [script](https://gist.github.com/f-steff/4d765eef037e9b751c58d43490ebad62) named __YouTube “Save to Playlist” Enhancer__. Because it stopped working. You can see [there](https://gist.github.com/f-steff/4d765eef037e9b751c58d43490ebad62?permalink_comment_id=5812464#gistcomment-5812464) the differences and fixes.*
+
 ## Features
 
 - add an input to playlists list menu to filter them
