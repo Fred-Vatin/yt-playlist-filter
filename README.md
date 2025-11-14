@@ -54,7 +54,6 @@ That’s why I recommend to watch this repository and star ⭐ to easily find th
 
 - If you are sure you found a bug, open an [issue](https://github.com/Fred-Vatin/yt-playlist-filter/issues)
 - If you want to ask something, get help, talk and share something with others about this user script, open a [discussion](https://github.com/Fred-Vatin/yt-playlist-filter/discussions)
-- If you
 
 ---
 
