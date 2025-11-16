@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.0
+// @version      1.1.0
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin, Flemming Steffensen
@@ -49,6 +49,7 @@
 	const selector_Header = "yt-panel-header-view-model";
 	const selector_List = ".ytListViewModelHost";
 	const selector_ListItems = ".toggleableListItemViewModelHost";
+	const selector_SelItems = `:scope > yt-list-item-view-model[aria-pressed="true"]`;
 	const selector_Item = ".yt-core-attributed-string";
 	const selector_OpenMenuParent = "ytd-app ytd-popup-container";
 	const InputId = "filterPlaylist";
@@ -314,6 +315,8 @@
 	function addFilterInput(elements = {}) {
 		const { list = null, header = null } = elements;
 
+		autoTopList(list);
+
 		const existingFilterInput = document.getElementById(InputId);
 
 		if (!existingFilterInput) {
@@ -362,6 +365,11 @@
 	 * @param {string} filterText - The text to filter playlist items by. Items not containing this text will be hidden.
 	 */
 	function filterPlaylist(playlist, filterText) {
+		if (!playlist) {
+			console.log("❌ filterPlaylist(playlist, filterText): playlist is null or invalid");
+			return;
+		}
+
 		const listItems = playlist.querySelectorAll(selector_ListItems);
 		// const listItems = query(playlist, selector_ListItems);
 		const text = filterText.trim().toLowerCase();
@@ -372,6 +380,49 @@
 			const title = formattedString?.textContent.trim().toLowerCase();
 			item.style.display = text && !title.includes(text) ? "none" : "block";
 		});
+	}
+
+	/**
+	 * Automatically sorts playlist items by placing selected items at the top.
+	 * Selected items are playlists in which the current video already exists.
+	 * @param {HTMLElement} playlist - The playlist container element to sort
+	 * @returns {void}
+	 * @description
+	 * This function reorganizes playlist items so that selected items appear first,
+	 * followed by unselected items. It filters items using predefined selectors,
+	 * logs the operation status, and reinserts items in the new order.
+	 * @example
+	 * const playlistElement = document.querySelector('.playlist');
+	 * autoTopList(playlistElement);
+	 */
+	function autoTopList(playlist) {
+		if (!playlist) {
+			console.log("❌ autoTopList(playlist): playlist is null or invalid");
+			return;
+		}
+
+		// Collect all items
+		const listItems = Array.from(playlist.querySelectorAll(selector_ListItems));
+		console.log("✅ autoTopList(playlist), listItems number: ", listItems.length);
+
+		// Separates the selected ones from the rest
+		const selected = listItems.filter((item) => item.querySelector(selector_SelItems));
+		const unselected = listItems.filter((item) => !item.querySelector(selector_SelItems));
+
+		if (selected.length > 0) {
+			console.log(`✅ autoTopList(playlist), this video belongs to ${selected.length} playlist(s)`);
+			// Reinsert in the desired order
+			[...selected, ...unselected].forEach((item) => {
+				playlist.appendChild(item);
+			});
+
+			console.log(`✅ autoTopList(playlist), playlists have been sorted.`);
+
+			const sortedItems = Array.from(playlist.querySelectorAll(selector_ListItems));
+			console.log("✅ autoTopList(playlist), sortedItems number: ", sortedItems.length);
+		} else {
+			console.log("❌ autoTopList(playlist): this video doesn’t belong to any existing playlist");
+		}
 	}
 
 	/**
