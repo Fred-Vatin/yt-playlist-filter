@@ -10,6 +10,7 @@ This project contains an userscript `user script/yt-playlist-filter.user.js`. Yo
 
 - add an input to playlists list menu to filter them
 - when watching a video, you can press `p` to open the *“Save to playlist”* menu
+- if the video is already in a playlist, this playlist is shown at the top of the list
 - multiple youtube languages UI are supported and can be easily added
   - for now: English, French, Deutsch, Spanish, Italian, Portuguese
 
