@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.0
+// @version      1.1.1
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin, Flemming Steffensen
@@ -25,10 +25,12 @@
 	const SHORTKEY = "KeyP"; // if you want to set a modifier key shortcut, edit the handlePlaylistKey function
 
 	// Add your language for the Save menu entry name
-	// 1. Play a video
-	// 2. Click the menu button where there is the "save to playlist" menu entry
-	// 3. In the dev tool > inspector, search for the selector: yt-button-shape > button[aria-label]
-	//    It should be around the 7th match. Copy the [aria-label] value.
+	// - Play a video
+
+	// First case scenario: the "save to playlist" button is in the "…" sub-menu
+	// 1. Click the "…" menu button where there is the "save to playlist" menu entry
+	// 2. In the dev tool > inspector, search for the selector: yt-button-shape > button[aria-label]
+	//    It should be around the 7th match. Copy the [aria-label] value and add it here.
 	const MoreActionsButtonText = [
 		"More actions",
 		"Autres actions",
@@ -37,9 +39,23 @@
 		"Altre azioni",
 		"Mais ações",
 	];
-	// 4. search for the selector: #items > ytd-menu-service-item-renderer yt-formatted-string
+	// 3. search for the selector: #items > ytd-menu-service-item-renderer yt-formatted-string
 	//    copy the text content
 	const SaveButtonText = ["Save", "Enregistrer", "Speichern", "Guardar", "Salva"];
+
+	// Second case scenario, the "Save" to playlist button is in direct access
+	// 1. In the dev tool > inspector, search for the selector: .ytSpecButtonViewModelHost button[aria-label]
+	//    until your find the one for the save to playlist.
+	// 2. It should be around the 7th match. Copy the [aria-label] value and add it here.
+	const DirectSaveButtonText = [
+		"Save to playlist",
+		"Enregistrer dans une playlist",
+		"Zu Playlist hinzufügen",
+		"Añadir a lista de reproducción",
+		"Salva in una playlist",
+		"Salvar na playlist",
+		"Guardar na playlist",
+	];
 
 	/**==========================================================================
    * ℹ		GLOBAL DEFINITION
@@ -467,10 +483,23 @@
 	 * @returns {void}
 	 */
 	function openSaveToPlaylistDialog() {
-		const directSaveButton = document.querySelector('yt-button-shape button[aria-label="Save to playlist"]');
+		let directSaveButton = null;
+		for (const text of DirectSaveButtonText) {
+			const selector = `.ytSpecButtonViewModelHost button[aria-label="${text}"]`;
+			directSaveButton = document.querySelector(selector);
+			if (directSaveButton) {
+				break;
+			}
+		}
+
 		if (directSaveButton) {
+			console.log("✅ openSaveToPlaylistDialog(), direct save button found. Click it");
 			directSaveButton.click();
 		} else {
+			console.log(
+				"❌ openSaveToPlaylistDialog(), direct save button NOT found. Search for More Actions menu"
+			);
+
 			let moreActionsButton = null;
 			for (const text of MoreActionsButtonText) {
 				const selector = `yt-button-shape > button[aria-label="${text}"]`;
@@ -481,6 +510,7 @@
 			}
 
 			if (moreActionsButton) {
+				console.log("✅ openSaveToPlaylistDialog(), More Actions menu found. Click it");
 				moreActionsButton.click();
 				setTimeout(() => {
 					const submenuItems = document.querySelectorAll(
