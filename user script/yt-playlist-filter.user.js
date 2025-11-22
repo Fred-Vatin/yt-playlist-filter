@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.1
+// @version      1.1.2
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin, Flemming Steffensen
@@ -310,7 +310,10 @@
 	 * isPlayer('https://youtu.be/dQw4w9WgXcQ');
 	 */
 	function isPlayer(url) {
-		if (url.startsWith("https://www.youtube.com/watch?v=")) {
+		if (
+			url.startsWith("https://www.youtube.com/watch?v=") ||
+			url.startsWith("https://www.youtube.com/live/")
+		) {
 			console.log("✅ Player detected !");
 			return true;
 		} else {
