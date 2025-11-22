@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.2](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.1.1...v1.1.2) (2025-11-22)
+
+
+### 🐞 Bug Fixes
+
+* support live url ([e783b57](https://github.com/Fred-Vatin/yt-playlist-filter/commit/e783b5763cc7b4e09b4ab72e8a136c051a9ad0a9))
+
 ## [1.1.1](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.1.0...v1.1.1) (2025-11-18)
 
 
