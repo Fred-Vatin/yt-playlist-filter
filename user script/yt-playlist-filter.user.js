@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.2
+// @version      1.1.3
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin, Flemming Steffensen
@@ -107,7 +107,7 @@
 
 	// Handle P key press at first launch if video playing
 	if (isPlayer(URL)) {
-		togglePlaylistListener(true);
+		SetKeydownListener(true);
 	}
 
 	/**==========================================================================
@@ -143,9 +143,9 @@
 
 			// enable P key press on video page to open the save to playlist menu
 			if (isPlayer(URL)) {
-				togglePlaylistListener(true);
+				SetKeydownListener(true);
 			} else {
-				togglePlaylistListener(false);
+				SetKeydownListener(false);
 			}
 		}
 	}
@@ -465,11 +465,12 @@
 
 			input.dispatchEvent(inputEvent);
 
-			console.log(`✅ "input" found. Set focus!`);
+			const timeout = 100;
+			console.log(`✅ "input" found. Set focus! Timeout = ${timeout}`);
 			// delay required to set the focus
 			setTimeout(() => {
 				input.focus();
-			}, 100);
+			}, timeout);
 		} else {
 			console.log(`❌ "input" not found. Focus not set!`);
 		}
@@ -496,7 +497,7 @@
 		}
 
 		if (directSaveButton) {
-			console.log("✅ openSaveToPlaylistDialog(), direct save button found. Click it");
+			console.log("✅ openSaveToPlaylistDialog(), direct save button found. Click it", directSaveButton);
 			directSaveButton.click();
 		} else {
 			console.log(
@@ -569,7 +570,7 @@
 	 *
 	 * @param {boolean} enable - If true, adds the event listener; if false, removes it.
 	 */
-	function togglePlaylistListener(enable) {
+	function SetKeydownListener(enable) {
 		if (!ENABLE_SHORTKEY) return;
 
 		if (enable && !isListenerActive) {

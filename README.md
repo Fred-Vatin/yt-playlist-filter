@@ -22,6 +22,15 @@ This project contains an userscript `user script/yt-playlist-filter.user.js`. Yo
 
 - your browser needs the extension [Tampermonkey](https://www.tampermonkey.net/) or an equivalent to install and run user scripts
 
+> [!WARNING]
+> If on Edge you installed **Tampermonkey** from the Edge Add-ons store AND if pressing `P` only opens the save **playlist menu** for less than a second, then :
+> - Open Tampermonkey dashboard > utilities > Cloud. Select Google Drive and export your config. Then close the tab.
+> - Open [edge://extensions](edge://extensions/)
+> - Search for `Tampermonkey` and disable it.
+> - Go to the [chrome store](https://chromewebstore.google.com/detail/tampermonkey/dhdgffkkebhmkfjojejmpbldmpobfkfo) and install this version
+> - Open Tampermonkey dashboard > utilities > Cloud. Select Google Drive and import your last config.
+> - Go to your installed userscripts tab and check if there are no duplicate then update them all.
+
 ## Configure
 
 In your extension, search for the script `YouTube Save to Playlist filter` and edit it.
