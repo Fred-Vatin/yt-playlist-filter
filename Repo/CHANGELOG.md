@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.0](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.1.3...v1.2.0) (2026-01-27)
+
+
+### 🚀 Features
+
+* handle old save to playlist menu ([8f73b71](https://github.com/Fred-Vatin/yt-playlist-filter/commit/8f73b719512bf4ecbaeceaf162358bea76c7eb48)), closes [#7](https://github.com/Fred-Vatin/yt-playlist-filter/issues/7)
+
 ## [1.1.3](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.1.2...v1.1.3) (2025-11-27)
 
 
