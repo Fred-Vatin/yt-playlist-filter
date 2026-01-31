@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.3.0](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.2.0...v1.3.0) (2026-01-31)
+
+
+### 🚀 Features
+
+* add youtube music support ([e3461d7](https://github.com/Fred-Vatin/yt-playlist-filter/commit/e3461d7208f8270e43b0a558f7587f43194682ca))
+
+
+### 📚 Documentation
+
+* update readme for youtube music ([2b1f6d1](https://github.com/Fred-Vatin/yt-playlist-filter/commit/2b1f6d15a4437ebaee99b87fc2e3c2926d01de18))
+
+
+### 🐞 Bug Fixes
+
+* improve checkbox menu support ([dee4be6](https://github.com/Fred-Vatin/yt-playlist-filter/commit/dee4be65a61d656ce839db681c9dc2b2dfa4919b))
+
 ## [1.2.0](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.1.3...v1.2.0) (2026-01-27)
 
 
