@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.4
+// @version      1.1.5
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin, Flemming Steffensen
@@ -216,10 +216,31 @@
                 } else if (node.matches(selector_MenuType2)) {
                   menu = node;
                   console.log(`✅ selector_MenuType2 detected`, menu);
-                  connect(obsv_MenuItems, {
-                    parent: menu,
-                    strLog: "✅ obsv_MenuItems started 🔌",
-                  });
+
+                  header = document.querySelector(selector_HeaderType2);
+                  list = document.querySelector(selector_ListType2);
+
+                  if (!header || !list) {
+                    connect(obsv_MenuItems, {
+                      parent: menu,
+                      strLog: "✅ obsv_MenuItems started 🔌",
+                    });
+                  } else {
+                    if (header) {
+                      console.log(`✅ header used`, header);
+
+                      if (list) {
+                        console.log(`✅ list used`, list);
+                        addFilterInput({ header: header, list: list });
+                        break;
+                      } else {
+                        console.log(`❌ list not detected in menu`);
+                      }
+                    } else {
+                      console.log(`❌ header not detected in menu`);
+                    }
+                  }
+
                 } else {
                   console.log(`❌ new node seems to match selectors_PlaylistsMenu but for some unknown reason it doesn’t match selector_MenuType1 or selector_MenuType2`, node);
                 }
