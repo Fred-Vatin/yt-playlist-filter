@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Music Save to Playlist filter
 // @namespace    fred.vatin.ytm-playlists-filter
-// @version      1.0.0
+// @version      1.0.1
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin
@@ -345,10 +345,10 @@
     for (const mutation of mutationsList) {
       const AriaHidden = mutation.target.ariaHidden;
 
-      // console.log(
-      // 	`mutation type: ${mutation.type}, AriaHidden: ${AriaHidden}, attribute changed: ${mutation.attributeName}`,
-      // 	mutation.target
-      // );
+      console.log(
+        `callback_MenuOpen triggered. mutation type: ${mutation.type}, AriaHidden: ${AriaHidden}, attribute changed: ${mutation.attributeName}`,
+        mutation.target
+      );
 
       if (!AriaHidden) {
         setFocus(InputId);
@@ -562,26 +562,26 @@
 
     // Collect all items
     listItems = Array.from(playlists.querySelectorAll(selector_ListItems));
-    console.log("✅ autoTopList(playlist), listItems number: ", listItems.length);
+    console.log("✅ autoTopList(playlists), listItems number: ", listItems.length);
 
     // Separates the selected ones from the rest
     const selected = listItems.filter((item) => item.querySelector(selector_SelItems));
     const unselected = listItems.filter((item) => !item.querySelector(selector_SelItems));
 
     if (selected.length > 0) {
-      console.log(`✅ autoTopList(playlist), this video belongs to ${selected.length} playlist(s)`);
+      console.log(`✅ autoTopList(playlists), this video belongs to ${selected.length} playlist(s)`);
       // Reinsert in the desired order
       [...selected, ...unselected].forEach((item) => {
         playlists.appendChild(item);
       });
 
-      console.log(`✅ autoTopList(playlist), playlists have been sorted.`);
+      console.log(`✅ autoTopList(playlists), playlists have been sorted.`);
 
       const sortedItems = Array.from(playlists.querySelectorAll(selector_ListItems));
-      console.log("✅ autoTopList(playlist), sortedItems number: ", sortedItems.length);
+      console.log("✅ autoTopList(playlists), sortedItems number: ", sortedItems.length);
     } else {
       console.log(
-        "❌ autoTopList(playlist): this video doesn’t belong to any existing playlist. Not sorting needed."
+        "❌ autoTopList(playlists): this video doesn’t belong to any existing playlist. Not sorting needed."
       );
     }
   }
@@ -593,7 +593,7 @@
    *
    * @param {string} el - The ID of the input element to focus.
    */
-  function setFocus(el) {
+  async function setFocus(el) {
     const input = document.getElementById(el);
     if (input) {
       // reset filter
@@ -610,9 +610,8 @@
       const timeout = 100;
       console.log(`✅ "input" found. Set focus! Timeout = ${timeout}`);
       // delay required to set the focus
-      setTimeout(() => {
-        input.focus();
-      }, timeout);
+      await sleep(timeout);
+      input.focus();
     } else {
       console.log(`❌ "input" not found. Focus not set!`);
     }
