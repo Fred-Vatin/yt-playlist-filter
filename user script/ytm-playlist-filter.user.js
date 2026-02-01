@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Music Save to Playlist filter
 // @namespace    fred.vatin.ytm-playlists-filter
-// @version      1.0.1
+// @version      1.0.2
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin
@@ -43,6 +43,7 @@
    * ℹ		GLOBAL DEFINITION
   ===========================================================================*/
   let URL = window.location.href;
+  let PLAYLISTS = null;
   console.log("URL (at first loading): ", URL);
   const selector_MoreActionMenuButton = ".menu.ytmusic-player-bar[dropdown-only] button";
   const selector_MoreActionSubMenuItems = "ytmusic-menu-navigation-item-renderer.ytmusic-menu-popup-renderer";
@@ -59,7 +60,7 @@
   const selector_ItemType1 = ".yt-core-attributed-string";
   const selector_ItemType2 = "#title";
   const selector_OpenMenuParentType1 = "ytd-app ytd-popup-container";
-  const selector_OpenMenuParentType2 = "tp-yt-paper-dialog.ytmusic-popup-container";
+  const selector_OpenMenuParentType2 = "tp-yt-paper-dialog.ytmusic-popup-container:has(> .ytmusic-popup-container)";
   const InputId = "filterPlaylist";
 
   // array of all selectors for playslists menu and its header
@@ -352,6 +353,10 @@
 
       if (!AriaHidden) {
         setFocus(InputId);
+        if (PLAYLISTS) {
+          console.log(`Use PLAYLISTS`, PLAYLISTS);
+          autoTopList(PLAYLISTS);
+        }
       }
     }
   }
@@ -431,7 +436,9 @@
   function addFilterInput(elements = {}) {
     const { list = null, header = null } = elements;
 
-    autoTopList(list);
+    PLAYLISTS = list;
+
+    autoTopList(PLAYLISTS);
 
     const existingFilterInput = document.getElementById(InputId);
 
@@ -581,7 +588,7 @@
       console.log("✅ autoTopList(playlists), sortedItems number: ", sortedItems.length);
     } else {
       console.log(
-        "❌ autoTopList(playlists): this video doesn’t belong to any existing playlist. Not sorting needed."
+        "❌ autoTopList(playlists): this video doesn’t belong to any existing playlist or not detected (YTM not supporter). No sorting needed."
       );
     }
   }
@@ -634,7 +641,7 @@
       console.log("✅ openSaveToPlaylistDialog(), More Actions menu found. Click it", moreActionsButton);
       moreActionsButton.click();
 
-      await sleep(300);
+      await sleep(250);
 
       const SubMenuItems = document.querySelectorAll(selector_MoreActionSubMenuItems);
 
