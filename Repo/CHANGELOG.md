@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.1...v1.3.2) (2026-02-01)
+
+
+### 🐞 Bug Fixes
+
+* **music:** input is now clean up when menu is recalled ([671e75e](https://github.com/Fred-Vatin/yt-playlist-filter/commit/671e75ea44bad9729a49a3476dc384f9c9fe19b4))
+
 ## [1.3.1](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.0...v1.3.1) (2026-02-01)
 
 
