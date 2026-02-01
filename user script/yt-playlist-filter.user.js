@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.5
+// @version      1.1.6
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin, Flemming Steffensen
@@ -31,14 +31,7 @@
   // 1. Click the "…" menu button where there is the "save to playlist" menu entry
   // 2. In the dev tool > inspector, search for the selector: yt-button-shape > button[aria-label]
   //    It should be around the 7th match. Copy the [aria-label] value and add it here.
-  const MoreActionsButtonText = [
-    "More actions",
-    "Autres actions",
-    "Mehr Aktionen",
-    "Más acciones",
-    "Altre azioni",
-    "Mais ações",
-  ];
+  const MoreActionsButtonText = ["More actions", "Autres actions", "Mehr Aktionen", "Más acciones", "Altre azioni", "Mais ações"];
   // 3. search for the selector: #items > ytd-menu-service-item-renderer yt-formatted-string
   //    copy the text content
   const SaveButtonText = ["Save", "Enregistrer", "Speichern", "Guardar", "Salva"];
@@ -61,7 +54,9 @@
    * ℹ		GLOBAL DEFINITION
   ===========================================================================*/
   let URL = window.location.href;
+  let PLAYLISTS = null;
   console.log("URL (at first loading): ", URL);
+  const selector_MoreActionSubMenuItems = "#items > ytd-menu-service-item-renderer yt-formatted-string";
   const selector_MenuType1 = "yt-contextual-sheet-layout";
   const selector_MenuType2 = "ytd-add-to-playlist-renderer.ytd-popup-container";
   const selector_HeaderType1 = "yt-panel-header-view-model";
@@ -182,7 +177,6 @@
    */
   let items = 0;
   function callback_NewMenu(mutationsList, obsv_PlaylistContainer) {
-
     for (const mutation of mutationsList) {
       if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
         // Iterate only on newly added nodes
@@ -240,12 +234,12 @@
                       console.log(`❌ header not detected in menu`);
                     }
                   }
-
                 } else {
-                  console.log(`❌ new node seems to match selectors_PlaylistsMenu but for some unknown reason it doesn’t match selector_MenuType1 or selector_MenuType2`, node);
+                  console.log(
+                    `❌ new node seems to match selectors_PlaylistsMenu but for some unknown reason it doesn’t match selector_MenuType1 or selector_MenuType2`,
+                    node,
+                  );
                 }
-
-
               }
             }
           }
@@ -255,21 +249,20 @@
   }
 
   /**
- * MutationObserver callback called when a new playlists menu is added to DOM (detected by callback_NewMenu)
- *
- * Iterates over the provided MutationRecord list and, for each mutation (added nodes),
- * check if the required menu elements are there.
- * If yes, it adds the input filter.
- *
- * @param {MutationRecord[]} mutationsList - Array of MutationRecord objects provided by the observer.
- * @param {MutationObserver} obsv_MenuAvailable - The MutationObserver instance that invoked this callback (not used)
- * @returns {void}
- * @callback MutationCallback
- * @listens {MutationEvent} childList - Listens for changes in child elements
- *
- */
+   * MutationObserver callback called when a new playlists menu is added to DOM (detected by callback_NewMenu)
+   *
+   * Iterates over the provided MutationRecord list and, for each mutation (added nodes),
+   * check if the required menu elements are there.
+   * If yes, it adds the input filter.
+   *
+   * @param {MutationRecord[]} mutationsList - Array of MutationRecord objects provided by the observer.
+   * @param {MutationObserver} obsv_MenuAvailable - The MutationObserver instance that invoked this callback (not used)
+   * @returns {void}
+   * @callback MutationCallback
+   * @listens {MutationEvent} childList - Listens for changes in child elements
+   *
+   */
   function callback_MenuAvailable(mutationsList, obsv_MenuAvailable) {
-
     let header = null;
     let list = null;
 
@@ -354,13 +347,17 @@
     for (const mutation of mutationsList) {
       const AriaHidden = mutation.target.ariaHidden;
 
-      // console.log(
-      // 	`mutation type: ${mutation.type}, AriaHidden: ${AriaHidden}, attribute changed: ${mutation.attributeName}`,
-      // 	mutation.target
-      // );
+      console.log(
+        `callback_MenuOpen triggered. mutation type: ${mutation.type}, AriaHidden: ${AriaHidden}, attribute changed: ${mutation.attributeName}`,
+        mutation.target
+      );
 
       if (!AriaHidden) {
         setFocus(InputId);
+        if (PLAYLISTS) {
+          console.log(`Use PLAYLISTS`, PLAYLISTS);
+          autoTopList(PLAYLISTS);
+        }
       }
     }
   }
@@ -416,10 +413,7 @@
    * isPlayer('https://youtu.be/dQw4w9WgXcQ');
    */
   function isPlayer(url) {
-    if (
-      url.startsWith("https://www.youtube.com/watch?v=") ||
-      url.startsWith("https://www.youtube.com/live/")
-    ) {
+    if (url.startsWith("https://www.youtube.com/watch?v=") || url.startsWith("https://www.youtube.com/live/")) {
       console.log("✅ Player detected !");
       return true;
     } else {
@@ -440,12 +434,13 @@
   function addFilterInput(elements = {}) {
     const { list = null, header = null } = elements;
 
-    autoTopList(list);
+    PLAYLISTS = list;
+
+    autoTopList(PLAYLISTS);
 
     const existingFilterInput = document.getElementById(InputId);
 
     if (!existingFilterInput) {
-
       // handle MenuType1 vs MenuType2
       const isType2 = header.matches(selector_HeaderType2);
       let title = null;
@@ -453,6 +448,7 @@
 
       if (isType2) {
         title = header?.querySelector('span[role="text"]');
+        title.style.marginRight = "20px";
         selector_OpenMenuParent = selector_OpenMenuParentType2;
       } else {
         title = header?.firstElementChild;
@@ -557,34 +553,34 @@
     let selector_ListItems = null;
 
     if (isType2) {
-      selector_ListItems = selector_ListItemsType2
+      selector_ListItems = selector_ListItemsType2;
       selector_SelItems = selector_SelItemsType2;
     } else {
-      selector_ListItems = selector_ListItemsType1
+      selector_ListItems = selector_ListItemsType1;
       selector_SelItems = selector_SelItemsType1;
     }
 
     // Collect all items
     listItems = Array.from(playlists.querySelectorAll(selector_ListItems));
-    console.log("✅ autoTopList(playlist), listItems number: ", listItems.length);
+    console.log("✅ autoTopList(playlists), listItems number: ", listItems.length);
 
     // Separates the selected ones from the rest
     const selected = listItems.filter((item) => item.querySelector(selector_SelItems));
     const unselected = listItems.filter((item) => !item.querySelector(selector_SelItems));
 
     if (selected.length > 0) {
-      console.log(`✅ autoTopList(playlist), this video belongs to ${selected.length} playlist(s)`);
+      console.log(`✅ autoTopList(playlists), this video belongs to ${selected.length} playlist(s)`);
       // Reinsert in the desired order
       [...selected, ...unselected].forEach((item) => {
         playlists.appendChild(item);
       });
 
-      console.log(`✅ autoTopList(playlist), playlists have been sorted.`);
+      console.log(`✅ autoTopList(playlists), playlists have been sorted.`);
 
       const sortedItems = Array.from(playlists.querySelectorAll(selector_ListItems));
-      console.log("✅ autoTopList(playlist), sortedItems number: ", sortedItems.length);
+      console.log("✅ autoTopList(playlists), sortedItems number: ", sortedItems.length);
     } else {
-      console.log("❌ autoTopList(playlist): this video doesn’t belong to any existing playlist. Not sorting needed.");
+      console.log("❌ autoTopList(playlists): this video doesn’t belong to any existing playlist. Not sorting needed.");
     }
   }
 
@@ -595,7 +591,7 @@
    *
    * @param {string} el - The ID of the input element to focus.
    */
-  function setFocus(el) {
+  async function setFocus(el) {
     const input = document.getElementById(el);
     if (input) {
       // reset filter
@@ -612,9 +608,8 @@
       const timeout = 100;
       console.log(`✅ "input" found. Set focus! Timeout = ${timeout}`);
       // delay required to set the focus
-      setTimeout(() => {
-        input.focus();
-      }, timeout);
+      await sleep(timeout);
+      input.focus();
     } else {
       console.log(`❌ "input" not found. Focus not set!`);
     }
@@ -630,8 +625,7 @@
    *
    * @returns {void}
    */
-  function openSaveToPlaylistDialog() {
-
+  async function openSaveToPlaylistDialog() {
     let directSaveButton = null;
 
     for (const text of DirectSaveButtonText) {
@@ -646,9 +640,7 @@
       console.log("✅ openSaveToPlaylistDialog(), direct save button found. Click it", directSaveButton);
       directSaveButton.click();
     } else {
-      console.log(
-        "❌ openSaveToPlaylistDialog(), direct save button NOT found. Search for More Actions menu"
-      );
+      console.log("❌ openSaveToPlaylistDialog(), direct save button NOT found. Search for More Actions menu");
 
       let moreActionsButton = null;
       for (const text of MoreActionsButtonText) {
@@ -662,19 +654,14 @@
       if (moreActionsButton) {
         console.log("✅ openSaveToPlaylistDialog(), More Actions menu found. Click it");
         moreActionsButton.click();
-        setTimeout(() => {
-          const submenuItems = document.querySelectorAll(
-            "#items > ytd-menu-service-item-renderer yt-formatted-string"
-          );
-          let found = false;
-          submenuItems.forEach((item) => {
-            if (SaveButtonText.includes(item.textContent.trim())) {
-              item.click();
-              console.log("✅ Click on Save item:", item);
-              found = true;
-            }
-          });
-        }, 250);
+        await sleep(250);
+        const submenuItems = document.querySelectorAll(selector_MoreActionSubMenuItems);
+        submenuItems.forEach((item) => {
+          if (SaveButtonText.includes(item.textContent.trim())) {
+            item.click();
+            console.log("✅ Click on Save item:", item);
+          }
+        });
       } else {
         console.error("❌ Neither a direct 'Save' button nor a 'More actions' button was found.");
       }
@@ -728,5 +715,14 @@
       document.removeEventListener("keydown", handlePlaylistKey, true);
       IS_KEYPRESS_LISTENER_ACTIVE = false;
     }
+  }
+
+  /**
+   * Pauses execution for a specified duration.
+   * @param {number} ms - The number of milliseconds to sleep.
+   * @returns {Promise<void>} A promise that resolves after the specified delay.
+   */
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 })();
