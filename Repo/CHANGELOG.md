@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.3.1](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.0...v1.3.1) (2026-02-01)
+
+
+### 🐞 Bug Fixes
+
+* autoTopList is now called properly when needed ([4e590e4](https://github.com/Fred-Vatin/yt-playlist-filter/commit/4e590e4190b8dfa5bad6e4ba4e695c2340432e39))
+
+
+### ✨ Polish
+
+* use sleep function instead of setTimeout ([5346527](https://github.com/Fred-Vatin/yt-playlist-filter/commit/53465274481dc6e1cf0103e970cfd9c344987044))
+
 ## [1.3.0](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.2.0...v1.3.0) (2026-01-31)
 
 
