@@ -8,7 +8,7 @@ To install the script for **YouTube**, click the button below.
 
 To install the script for **YouTube Music**, click the button below.
 
-[![Install Userscript](https://img.shields.io/badge/Install_Userscript-Playlist%20Filter%20Music-blue?style=for-the-badge)](https://raw.githubusercontent.com/Fred-Vatin/yt-playlist-filter/main/user%20script/ytm-playlist-filter.user.js) [![BUY ME A COFFEE](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-ffffff?logo=buymeacoffee&style=for-the-badge&color=710067&logoColor=ffe071)](https://github.com/sponsors/Fred-Vatin)
+[![Install Userscript (music)](https://img.shields.io/badge/Install_Userscript-Playlist%20Filter%20Music-blue?style=for-the-badge)](https://raw.githubusercontent.com/Fred-Vatin/yt-playlist-filter/main/user%20script/ytm-playlist-filter.user.js) [![BUY ME A COFFEE](https://img.shields.io/badge/BUY%20ME%20A%20COFFEE-ffffff?logo=buymeacoffee&style=for-the-badge&color=710067&logoColor=ffe071)](https://github.com/sponsors/Fred-Vatin)
 
 *It is full rewrite and enhancement of another [script](https://gist.github.com/f-steff/4d765eef037e9b751c58d43490ebad62) named __YouTube “Save to Playlist” Enhancer__. Because it stopped working.*
 
