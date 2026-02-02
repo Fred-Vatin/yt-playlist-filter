@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.2...v1.3.3) (2026-02-02)
+
+
+### 🐞 Bug Fixes
+
+* make sure input is inserted everytime and get focus ([7ac9488](https://github.com/Fred-Vatin/yt-playlist-filter/commit/7ac9488bfa32db3d9ba33d3e746135bf0261baf3))
+
 ## [1.3.2](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.1...v1.3.2) (2026-02-01)
 
 
