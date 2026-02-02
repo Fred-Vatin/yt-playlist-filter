@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.6
+// @version      1.1.7
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin, Flemming Steffensen
@@ -142,10 +142,10 @@
    */
   function onUrlChange(event = "first loading") {
     const currentUrl = window.location.href;
-    console.log(`onUrlChange call by event: ${event}`);
+    console.log(`[onUrlChange] call by event: ${event}`);
 
     if (currentUrl !== URL) {
-      console.log("URL changed : ", currentUrl);
+      console.log("[onUrlChange] URL changed : ", currentUrl);
       URL = currentUrl;
 
       // enable P key press on video page to open the save to playlist menu
@@ -175,7 +175,7 @@
    * @callback MutationCallback
    * @listens {MutationEvent} childList - Listens for changes in child elements
    */
-  let items = 0;
+  // let items = 0;
   function callback_NewMenu(mutationsList, obsv_PlaylistContainer) {
     for (const mutation of mutationsList) {
       if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
@@ -183,16 +183,17 @@
         for (const node of mutation.addedNodes) {
           if (node instanceof Element) {
             // console.log(
-            // 	`🔍 Mutation on ${mutation.target.tagName}: ${mutation.addedNodes.length} addedNodes`,
+            // 	`🔍 [callback_NewMenu] Mutation on ${mutation.target.tagName}: ${mutation.addedNodes.length} addedNodes`,
             // 	node
             // );
             for (const selector of selectors_PlaylistsMenu) {
               if (node.matches(selector)) {
                 let menu = null;
                 items++;
-                // console.log(`✅ #${items} new selectors_PlaylistsMenu detected`, node);
+                if (node.matches(selector_MenuType1)) {
+                  // console.log(`✅ [callback_NewMenu] #${items} new selectors_PlaylistsMenu detected`, node);
 
-                /**===============================================
+                  /**===============================================
                 *	⚠		WARNING
                    Youtube inserts menu node differently depending on
                    from where you call it first.
@@ -200,16 +201,19 @@
                    menu element value.
                 ================================================*/
 
-                if (node.matches(selector_MenuType1)) {
                   menu = node;
-                  console.log(`✅ selector_MenuType1 detected`, menu);
+                  console.log(`✅ [callback_NewMenu] selector_MenuType1 detected`, menu);
+
+                  // elegant way to pass the node to the callback_MenuAvailable()
+                  obsv_MenuItems.menu = menu;
+
                   connect(obsv_MenuItems, {
                     parent: menu,
                     strLog: "✅ obsv_MenuItems started 🔌",
                   });
                 } else if (node.matches(selector_MenuType2)) {
                   menu = node;
-                  console.log(`✅ selector_MenuType2 detected`, menu);
+                  console.log(`✅ [callback_NewMenu] selector_MenuType2 detected`, menu);
 
                   header = document.querySelector(selector_HeaderType2);
                   list = document.querySelector(selector_ListType2);
@@ -217,26 +221,26 @@
                   if (!header || !list) {
                     connect(obsv_MenuItems, {
                       parent: menu,
-                      strLog: "✅ obsv_MenuItems started 🔌",
+                      strLog: "✅ [callback_NewMenu] obsv_MenuItems started 🔌",
                     });
                   } else {
                     if (header) {
-                      console.log(`✅ header used`, header);
+                      console.log(`✅ [callback_NewMenu] header used`, header);
 
                       if (list) {
-                        console.log(`✅ list used`, list);
+                        console.log(`✅ [callback_NewMenu] list used`, list);
                         addFilterInput({ header: header, list: list });
                         break;
                       } else {
-                        console.log(`❌ list not detected in menu`);
+                        console.log(`❌ [callback_NewMenu] list not detected in menu`);
                       }
                     } else {
-                      console.log(`❌ header not detected in menu`);
+                      console.log(`❌ [callback_NewMenu] header not detected in menu`);
                     }
                   }
                 } else {
                   console.log(
-                    `❌ new node seems to match selectors_PlaylistsMenu but for some unknown reason it doesn’t match selector_MenuType1 or selector_MenuType2`,
+                    `❌ [callback_NewMenu] new node seems to match selectors_PlaylistsMenu but for some unknown reason it doesn’t match selector_MenuType1 or selector_MenuType2`,
                     node,
                   );
                 }
@@ -265,6 +269,9 @@
   function callback_MenuAvailable(mutationsList, obsv_MenuAvailable) {
     let header = null;
     let list = null;
+    // let item = null;
+    let isType1 = false;
+    const Parent = obsv_MenuAvailable.menu; // check line 207 to understand what is this
 
     for (const mutation of mutationsList) {
       if (mutation.type === "childList" && mutation.addedNodes.length > 0) {
@@ -272,35 +279,39 @@
         for (const node of mutation.addedNodes) {
           if (node instanceof Element) {
             // console.log(
-            // 	`🔍 Mutation on ${mutation.target.tagName}: ${mutation.addedNodes.length} addedNodes`,
+            // 	`🔍 [callback_MenuAvailable] Mutation on ${mutation.target.tagName}: ${mutation.addedNodes.length} addedNodes`,
             // 	node
             // );
             for (const selector of selectors_MenuSubElements) {
               if (node.matches(selector)) {
-                // console.log(`✅ new selectors_MenuSubElements detected`, node);
+                // item++;
+                // console.log(`✅ [callback_MenuAvailable] item #${item} new selectors_MenuSubElements detected`, node);
+                // console.log(`✅ [callback_MenuAvailable] Context > new elements observed own to Parent: `, Parent);
 
                 if (node.matches(selector_HeaderType1)) {
                   header = node;
-                  console.log(`✅ selector_HeaderType1 detected`, header);
+                  isType1 = true;
+                  console.log(`✅ [callback_MenuAvailable] selector_HeaderType1 detected`, header);
                 } else if (node.matches(selector_HeaderType2)) {
                   header = node;
-                  console.log(`✅ selector_HeaderType2 detected`, header);
+                  console.log(`✅ [callback_MenuAvailable] selector_HeaderType2 detected`, header);
                 } else if (node.matches(selector_ListType1)) {
                   list = node;
-                  console.log(`✅ selector_ListType1 detected`, list);
+                  isType1 = true;
+                  console.log(`✅ [callback_MenuAvailable] selector_ListType1 detected`, list);
                 } else if (node.matches(selector_ListType2)) {
                   list = node;
-                  console.log(`✅ selector_ListType2 detected`, list);
+                  console.log(`✅ [callback_MenuAvailable] selector_ListType2 detected`, list);
                 } else {
                   console.log(
-                    `❌ new node seems to match selectors_MenuSubElements but for some unknown reason it doesn’t match selector_HeaderType or selector_ListType`,
+                    `❌ [callback_MenuAvailable] new node seems to match selectors_MenuSubElements but for some unknown reason it doesn’t match selector_HeaderType or selector_ListType`,
                     node,
                   );
                   continue;
                 }
 
                 if (header?.textContent.trim().length === 0) {
-                  console.log(`❌ header doesn’t contain title`, header);
+                  console.log(`❌ [callback_MenuAvailable] header doesn’t contain title`, header);
                   header = null;
                 }
               }
@@ -311,16 +322,21 @@
     }
 
     if (header) {
-      console.log(`✅ header used`, header);
+      console.log(`✅ [callback_MenuAvailable] header used`, header);
+
+      // try to get the list now if it failed to not part of the new mutation but from a previous one
+      if (!list) {
+        list = isType1 ? Parent.querySelector(selector_ListType1) : Parent.querySelector(selector_ListType2);
+      }
 
       if (list) {
-        console.log(`✅ list used`, list);
+        console.log(`✅ [callback_MenuAvailable] list used`, list);
         addFilterInput({ header: header, list: list });
       } else {
-        console.log(`❌ list not detected in menu`);
+        console.log(`❌ [callback_MenuAvailable] list not detected in menu`);
       }
     } else {
-      console.log(`❌ header not detected in menu`);
+      console.log(`❌ [callback_MenuAvailable] header not detected in menu`);
     }
   }
 
@@ -344,18 +360,28 @@
    */
 
   function callback_MenuOpen(mutationsList, obsv_MenuOpen) {
+    const header = obsv_MenuOpen.header;
+    const list = obsv_MenuOpen.list;
+
     for (const mutation of mutationsList) {
       const AriaHidden = mutation.target.ariaHidden;
 
       console.log(
-        `callback_MenuOpen triggered. mutation type: ${mutation.type}, AriaHidden: ${AriaHidden}, attribute changed: ${mutation.attributeName}`,
-        mutation.target
+        `[callback_MenuOpen] mutation type: ${mutation.type}, AriaHidden: ${AriaHidden}, attribute changed: ${mutation.attributeName}`,
+        mutation.target,
       );
 
       if (!AriaHidden) {
-        setFocus(InputId);
+        // Even if input were created in a previous call,
+        // on some page, when calling the menu for another video
+        // the input could be absent. We need to handle this.
+        if (header && list) {
+          addFilterInput({ header: header, list: list });
+        }
+
+        // setFocus(InputId);
         if (PLAYLISTS) {
-          console.log(`Use PLAYLISTS`, PLAYLISTS);
+          console.log(`[callback_MenuOpen] Use PLAYLISTS`, PLAYLISTS);
           autoTopList(PLAYLISTS);
         }
       }
@@ -414,10 +440,10 @@
    */
   function isPlayer(url) {
     if (url.startsWith("https://www.youtube.com/watch?v=") || url.startsWith("https://www.youtube.com/live/")) {
-      console.log("✅ Player detected !");
+      console.log("✅ [isPlayer] Player detected !");
       return true;
     } else {
-      console.log("❌ Not a player !");
+      console.log("❌ [isPlayer] Not a player !");
       return false;
     }
   }
@@ -432,33 +458,44 @@
    * @returns {void}
    */
   function addFilterInput(elements = {}) {
+    // it is safer to disconnect this observer here to avoid infinite call to addFilterInput()
+    disconnect(obsv_MenuOpen, "✅ [addFilterInput] obsv_MenuOpen stopped 🛑");
+
     const { list = null, header = null } = elements;
+    let existingFilterInput = false;
+    let selector_FilterInput = "";
 
     PLAYLISTS = list;
 
     autoTopList(PLAYLISTS);
 
-    const existingFilterInput = document.getElementById(InputId);
+    const isType2 = header.matches(selector_HeaderType2);
+    let title = null;
+    let selector_OpenMenuParent = null;
+
+    if (isType2) {
+      console.log(`✅ [addFilterInput] isType2`);
+      title = header?.querySelector('span[role="text"]');
+      title.style.marginRight = "20px";
+      selector_OpenMenuParent = selector_OpenMenuParentType2;
+      selector_FilterInput = `${selector_MenuType2} #${InputId}`
+    } else {
+      console.log(`✅ [addFilterInput] isType1`);
+      title = header?.firstElementChild;
+      selector_OpenMenuParent = selector_OpenMenuParentType1;
+      selector_FilterInput = `${selector_MenuType1} #${InputId}`
+    }
+
+    existingFilterInput = document.querySelector(selector_FilterInput);
 
     if (!existingFilterInput) {
       // handle MenuType1 vs MenuType2
-      const isType2 = header.matches(selector_HeaderType2);
-      let title = null;
-      let selector_OpenMenuParent = null;
-
-      if (isType2) {
-        title = header?.querySelector('span[role="text"]');
-        title.style.marginRight = "20px";
-        selector_OpenMenuParent = selector_OpenMenuParentType2;
-      } else {
-        title = header?.firstElementChild;
-        selector_OpenMenuParent = selector_OpenMenuParentType1;
-      }
+      console.log(`❌ [addFilterInput] existingFilterInput not found. Create it !`);
 
       if (title) {
-        console.log(`✅ title found, insert input`, title);
+        console.log(`✅ [addFilterInput] title found, insert input`, title);
       } else {
-        console.log(`❌ title not found Input will NOT be inserted.`, title);
+        console.log(`❌ [addFilterInput] title not found Input will NOT be inserted.`, title);
         return;
       }
 
@@ -476,21 +513,32 @@
         filterPlaylist(list, inputText);
       });
 
-      setFocus(InputId);
+      NewFilterInput = document.querySelector(selector_FilterInput);
 
-      // After the input is inserted, we can disconnect the observer for new sub-menu-elements
-      disconnect(obsv_MenuItems, "✅ obsv_MenuItems stopped 🛑");
+      console.log(`✅ [addFilterInput] set focus on "${selector_FilterInput}" `, NewFilterInput);
+      setFocus(NewFilterInput);
 
+      connectObserver(selector_OpenMenuParent);
+    } else {
+      console.log(`✅ [addFilterInput] input already exists set focus on "${selector_FilterInput}" : `, existingFilterInput);
+      setFocus(existingFilterInput);
+      connectObserver(selector_OpenMenuParent);
+    }
+
+    function connectObserver(selector_OpenMenuParent) {
       const PopupContainer = document.querySelector(selector_OpenMenuParent);
+
+      // Pass the container to the observer to make it available to callback_MenuOpen()
+      // obsv_MenuOpen.container = PopupContainer;
+      obsv_MenuOpen.header = header;
+      obsv_MenuOpen.list = list;
 
       // observe the future menu open
       connect(obsv_MenuOpen, {
         parent: PopupContainer,
         config: { subtree: true, attributes: true, attributeFilter: ["aria-hidden"] },
-        strLog: "✅ obsv_MenuOpen started 🔌",
+        strLog: "✅ [addFilterInput] obsv_MenuOpen started 🔌",
       });
-    } else {
-      console.log(`✅ input already exists`);
     }
   }
 
@@ -502,7 +550,7 @@
    */
   function filterPlaylist(playlists, filterText) {
     if (!playlists) {
-      console.log("❌ filterPlaylist(playlists, filterText): playlists is null or invalid");
+      console.log("❌ [filterPlaylist] playlists is null or invalid");
       return;
     }
 
@@ -542,7 +590,7 @@
    */
   function autoTopList(playlists) {
     if (!playlists) {
-      console.log("❌ autoTopList(playlists): playlists is null or invalid");
+      console.log("❌ [autoTopList] playlists is null or invalid");
       return;
     }
 
@@ -562,25 +610,25 @@
 
     // Collect all items
     listItems = Array.from(playlists.querySelectorAll(selector_ListItems));
-    console.log("✅ autoTopList(playlists), listItems number: ", listItems.length);
+    console.log("✅ [autoTopList] listItems number: ", listItems.length);
 
     // Separates the selected ones from the rest
     const selected = listItems.filter((item) => item.querySelector(selector_SelItems));
     const unselected = listItems.filter((item) => !item.querySelector(selector_SelItems));
 
     if (selected.length > 0) {
-      console.log(`✅ autoTopList(playlists), this video belongs to ${selected.length} playlist(s)`);
+      console.log(`✅ [autoTopList] this video belongs to ${selected.length} playlist(s)`);
       // Reinsert in the desired order
       [...selected, ...unselected].forEach((item) => {
         playlists.appendChild(item);
       });
 
-      console.log(`✅ autoTopList(playlists), playlists have been sorted.`);
+      console.log(`✅ [autoTopList] playlists have been sorted.`);
 
       const sortedItems = Array.from(playlists.querySelectorAll(selector_ListItems));
-      console.log("✅ autoTopList(playlists), sortedItems number: ", sortedItems.length);
+      console.log("✅ [autoTopList] sortedItems number: ", sortedItems.length);
     } else {
-      console.log("❌ autoTopList(playlists): this video doesn’t belong to any existing playlist. Not sorting needed.");
+      console.log("❌ [autoTopList] this video doesn’t belong to any existing playlist. No sorting needed.");
     }
   }
 
@@ -592,7 +640,9 @@
    * @param {string} el - The ID of the input element to focus.
    */
   async function setFocus(el) {
-    const input = document.getElementById(el);
+    // const input = document.getElementById(el);
+    const input = el;
+
     if (input) {
       // reset filter
       input.value = "";
@@ -606,12 +656,12 @@
       input.dispatchEvent(inputEvent);
 
       const timeout = 100;
-      console.log(`✅ "input" found. Set focus! Timeout = ${timeout}`);
+      console.log(`✅ [setFocus] "input" found. Set focus! Timeout = ${timeout}`);
       // delay required to set the focus
       await sleep(timeout);
       input.focus();
     } else {
-      console.log(`❌ "input" not found. Focus not set!`);
+      console.log(`❌ [setFocus] "input" not found. Focus not set!`);
     }
   }
 
@@ -637,10 +687,10 @@
     }
 
     if (directSaveButton) {
-      console.log("✅ openSaveToPlaylistDialog(), direct save button found. Click it", directSaveButton);
+      console.log("✅ [openSaveToPlaylistDialog] direct save button found. Click it", directSaveButton);
       directSaveButton.click();
     } else {
-      console.log("❌ openSaveToPlaylistDialog(), direct save button NOT found. Search for More Actions menu");
+      console.log("❌ [openSaveToPlaylistDialog] direct save button NOT found. Search for More Actions menu");
 
       let moreActionsButton = null;
       for (const text of MoreActionsButtonText) {
@@ -652,18 +702,18 @@
       }
 
       if (moreActionsButton) {
-        console.log("✅ openSaveToPlaylistDialog(), More Actions menu found. Click it");
+        console.log("✅ [openSaveToPlaylistDialog] More Actions menu found. Click it");
         moreActionsButton.click();
         await sleep(250);
         const submenuItems = document.querySelectorAll(selector_MoreActionSubMenuItems);
         submenuItems.forEach((item) => {
           if (SaveButtonText.includes(item.textContent.trim())) {
             item.click();
-            console.log("✅ Click on Save item:", item);
+            console.log("✅ [openSaveToPlaylistDialog] Click on Save item:", item);
           }
         });
       } else {
-        console.error("❌ Neither a direct 'Save' button nor a 'More actions' button was found.");
+        console.error("❌ [openSaveToPlaylistDialog] Neither a direct 'Save' button nor a 'More actions' button was found.");
       }
     }
   }
@@ -707,11 +757,11 @@
     if (!ENABLE_SHORTKEY) return;
 
     if (enable && !IS_KEYPRESS_LISTENER_ACTIVE) {
-      console.log(`✅ Add press P event listerner`);
+      console.log(`✅ [SetKeydownListener] Add press P event listerner`);
       document.addEventListener("keydown", handlePlaylistKey, true);
       IS_KEYPRESS_LISTENER_ACTIVE = true;
     } else if (!enable && IS_KEYPRESS_LISTENER_ACTIVE) {
-      console.log(`❌ Remove press P event listerner`);
+      console.log(`❌ [SetKeydownListener] Remove press P event listerner`);
       document.removeEventListener("keydown", handlePlaylistKey, true);
       IS_KEYPRESS_LISTENER_ACTIVE = false;
     }
