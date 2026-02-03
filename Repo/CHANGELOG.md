@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.3...v1.3.4) (2026-02-03)
+
+
+### 🐞 Bug Fixes
+
+* the input is inserted properly in any case (hopefully) ([6615f96](https://github.com/Fred-Vatin/yt-playlist-filter/commit/6615f960c7052693902d9b968d5ae5afb430452a))
+
 ## [1.3.3](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.2...v1.3.3) (2026-02-02)
 
 
