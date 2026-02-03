@@ -1,10 +1,10 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.7
+// @version      1.1.8
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
-// @author       Fred Vatin, Flemming Steffensen
+// @author       Fred Vatin
 // @updateURL    https://raw.githubusercontent.com/Fred-Vatin/yt-playlist-filter/main/user%20script/yt-playlist-filter.user.js
 // @downloadURL  https://raw.githubusercontent.com/Fred-Vatin/yt-playlist-filter/main/user%20script/yt-playlist-filter.user.js
 // @noframes
@@ -204,13 +204,35 @@
                   menu = node;
                   console.log(`✅ [callback_NewMenu] selector_MenuType1 detected`, menu);
 
-                  // elegant way to pass the node to the callback_MenuAvailable()
-                  obsv_MenuItems.menu = menu;
+                  header = document.querySelector(selector_HeaderType1);
+                  list = document.querySelector(selector_ListType1);
 
-                  connect(obsv_MenuItems, {
-                    parent: menu,
-                    strLog: "✅ obsv_MenuItems started 🔌",
-                  });
+                  console.log(`✅ [callback_NewMenu] header ?`, header);
+                  console.log(`✅ [callback_NewMenu] list ?`, list);
+
+                  if (!header || !list) {
+                    // elegant way to pass the node to the callback_MenuAvailable()
+                    obsv_MenuItems.menu = menu;
+
+                    connect(obsv_MenuItems, {
+                      parent: menu,
+                      strLog: "✅ obsv_MenuItems started 🔌",
+                    });
+                  } else {
+                    if (header) {
+                      console.log(`✅ [callback_NewMenu] header used`, header);
+
+                      if (list) {
+                        console.log(`✅ [callback_NewMenu] list used`, list);
+                        addFilterInput({ header: header, list: list });
+                        break;
+                      } else {
+                        console.log(`❌ [callback_NewMenu] list not detected in menu`);
+                      }
+                    } else {
+                      console.log(`❌ [callback_NewMenu] header not detected in menu`);
+                    }
+                  }
                 } else if (node.matches(selector_MenuType2)) {
                   menu = node;
                   console.log(`✅ [callback_NewMenu] selector_MenuType2 detected`, menu);
@@ -279,10 +301,13 @@
         for (const node of mutation.addedNodes) {
           if (node instanceof Element) {
             // console.log(
-            // 	`🔍 [callback_MenuAvailable] Mutation on ${mutation.target.tagName}: ${mutation.addedNodes.length} addedNodes`,
-            // 	node
+            //   `🔍 [callback_MenuAvailable] Mutation on ${mutation.target.tagName}: ${mutation.addedNodes.length} addedNodes`,
+            //   node
             // );
             for (const selector of selectors_MenuSubElements) {
+
+              // console.log(`✅ [callback_MenuAvailable] test selector: `, selector);
+
               if (node.matches(selector)) {
                 // item++;
                 // console.log(`✅ [callback_MenuAvailable] item #${item} new selectors_MenuSubElements detected`, node);
@@ -360,8 +385,9 @@
    */
 
   function callback_MenuOpen(mutationsList, obsv_MenuOpen) {
-    const header = obsv_MenuOpen.header;
-    const list = obsv_MenuOpen.list;
+    const Container = obsv_MenuOpen.container;
+    let header = null;
+    let list = null;
 
     for (const mutation of mutationsList) {
       const AriaHidden = mutation.target.ariaHidden;
@@ -374,7 +400,13 @@
       if (!AriaHidden) {
         // Even if input were created in a previous call,
         // on some page, when calling the menu for another video
-        // the input could be absent. We need to handle this.
+        // the input could be absent, so as header or list. We need to handle this.
+        header = Container?.querySelector(selector_HeaderType1) ?? Container?.querySelector(selector_HeaderType2);
+        list = Container?.querySelector(selector_ListType1) ?? Container?.querySelector(selector_ListType2);
+
+        console.log(`[callback_MenuOpen] header ?`, header);
+        console.log(`[callback_MenuOpen] list ?`, list);
+
         if (header && list) {
           addFilterInput({ header: header, list: list });
         }
@@ -529,9 +561,7 @@
       const PopupContainer = document.querySelector(selector_OpenMenuParent);
 
       // Pass the container to the observer to make it available to callback_MenuOpen()
-      // obsv_MenuOpen.container = PopupContainer;
-      obsv_MenuOpen.header = header;
-      obsv_MenuOpen.list = list;
+      obsv_MenuOpen.container = PopupContainer;
 
       // observe the future menu open
       connect(obsv_MenuOpen, {
