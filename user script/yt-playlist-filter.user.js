@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.8
+// @version      1.1.9
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin
@@ -763,6 +763,7 @@
       !evt.ctrlKey &&
       !evt.altKey &&
       !evt.metaKey &&
+      !evt.shiftKey &&
       evt.target.tagName !== "INPUT" &&
       evt.target.tagName !== "TEXTAREA" &&
       evt.target.contentEditable !== "true"
