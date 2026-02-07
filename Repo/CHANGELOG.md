@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.5](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.4...v1.3.5) (2026-02-07)
+
+
+### 🐞 Bug Fixes
+
+* shift+P is now ignored as expected ([86ed966](https://github.com/Fred-Vatin/yt-playlist-filter/commit/86ed9665109348e8c458d1724474526941fc6c50)), closes [#16](https://github.com/Fred-Vatin/yt-playlist-filter/issues/16)
+
 ## [1.3.4](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.3...v1.3.4) (2026-02-03)
 
 
