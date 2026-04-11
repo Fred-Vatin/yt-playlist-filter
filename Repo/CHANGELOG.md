@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.6](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.5...v1.3.6) (2026-04-11)
+
+
+### 🐞 Bug Fixes
+
+* filtering was broken ([200de86](https://github.com/Fred-Vatin/yt-playlist-filter/commit/200de8606b43aeaacf1eb93e385e409472017f73)), closes [#18](https://github.com/Fred-Vatin/yt-playlist-filter/issues/18)
+
 ## [1.3.5](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.4...v1.3.5) (2026-02-07)
 
 
