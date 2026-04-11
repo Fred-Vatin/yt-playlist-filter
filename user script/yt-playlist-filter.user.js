@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.9
+// @version      1.1.10
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin
@@ -67,7 +67,7 @@
   const selector_ListItemsType2 = ".ytd-add-to-playlist-renderer";
   const selector_SelItemsType1 = `:scope > yt-list-item-view-model[aria-pressed="true"]`;
   const selector_SelItemsType2 = `:scope > #checkbox[aria-checked="true"]`;
-  const selector_ItemType1 = ".yt-core-attributed-string";
+  const selector_ItemType1 = ".ytAttributedStringHost";
   const selector_ItemType2 = "#label";
   const selector_OpenMenuParentType1 = "ytd-app ytd-popup-container";
   const selector_OpenMenuParentType2 = "tp-yt-paper-dialog.ytd-popup-container";
