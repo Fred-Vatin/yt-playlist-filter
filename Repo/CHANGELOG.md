@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.7](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.6...v1.3.7) (2026-07-27)
+
+
+### 🐞 Bug Fixes
+
+* autoTopList with new YouTube version ([3968a04](https://github.com/Fred-Vatin/yt-playlist-filter/commit/3968a046bb33e5b35f0856fb509d42f23ecb641f)), closes [#20](https://github.com/Fred-Vatin/yt-playlist-filter/issues/20)
+
 ## [1.3.6](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.5...v1.3.6) (2026-04-11)
 
 
