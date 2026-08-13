@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.8](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.7...v1.3.8) (2026-08-13)
+
+
+### 🐞 Bug Fixes
+
+* autoTopList Not Working (again) ([b96be1a](https://github.com/Fred-Vatin/yt-playlist-filter/commit/b96be1ae7d9dea2294c55ce23fcf6fc062ef1ee3)), closes [#20](https://github.com/Fred-Vatin/yt-playlist-filter/issues/20)
+* playlist height when erasing filter ([0aa29ca](https://github.com/Fred-Vatin/yt-playlist-filter/commit/0aa29ca33d0478a0a81c2f674b78609cc81561b4)), closes [#22](https://github.com/Fred-Vatin/yt-playlist-filter/issues/22)
+
 ## [1.3.7](https://github.com/Fred-Vatin/yt-playlist-filter/compare/v1.3.6...v1.3.7) (2026-07-27)
 
 
