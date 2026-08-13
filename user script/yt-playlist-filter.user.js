@@ -72,6 +72,7 @@
   const selector_OpenMenuParentType1 = "ytd-app ytd-popup-container";
   const selector_OpenMenuParentType2 = "tp-yt-paper-dialog.ytd-popup-container";
   const InputId = "filterPlaylist";
+  const ListMinHeight = "220px";
 
   // array of all selectors for playslists menu and its header
   const selectors_PlaylistsMenu = [selector_MenuType1, selector_MenuType2];
@@ -498,6 +499,7 @@
     let selector_FilterInput = "";
 
     PLAYLISTS = list;
+    list.style.minHeight = ListMinHeight;
 
     autoTopList(PLAYLISTS);
 
