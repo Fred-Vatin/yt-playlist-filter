@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         YouTube Save to Playlist filter
 // @namespace    fred.vatin.yt-playlists-filter
-// @version      1.1.10
+// @version      1.3.8
 // @description  Tap P key to open the “save to playlist” menu where your can type to filter
 // @icon         https://www.google.com/s2/favicons?sz=64&domain=youtube.com
 // @author       Fred Vatin
@@ -658,7 +658,7 @@
       const sortedItems = Array.from(playlists.querySelectorAll(selector_ListItems));
       console.log("✅ [autoTopList] sortedItems number: ", sortedItems.length);
     } else {
-      console.log("❌ [autoTopList] this video doesn’t belong to any existing playlist. No sorting needed.");
+      console.log(`❌ [autoTopList] Selector "${selector_SelItems}" not found. This video may not belong to any existing playlist. Sorting aborted.`);
     }
   }
 
