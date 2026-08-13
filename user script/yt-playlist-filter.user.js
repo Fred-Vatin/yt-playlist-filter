@@ -65,7 +65,7 @@
   const selector_ListType2 = "#playlists";
   const selector_ListItemsType1 = ".toggleableListItemViewModelHost";
   const selector_ListItemsType2 = ".ytd-add-to-playlist-renderer";
-  const selector_SelItemsType1 = `:scope > yt-list-item-view-model[aria-pressed="true"]`;
+  const selector_SelItemsType1 = `:scope > yt-list-item-view-model button[aria-pressed="true"]`;
   const selector_SelItemsType2 = `:scope > #checkbox[aria-checked="true"]`;
   const selector_ItemType1 = ".ytAttributedStringHost";
   const selector_ItemType2 = "#label";
